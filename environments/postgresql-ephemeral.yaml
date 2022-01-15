@@ -55,8 +55,7 @@ items:
           name: postgresql
       spec:
         containers:
-        - capabilities: {}
-          env:
+        - env:
           - name: POSTGRESQL_USER
             valueFrom:
               secretKeyRef:
