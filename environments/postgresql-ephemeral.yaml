@@ -118,6 +118,12 @@ items:
         lastTriggeredImage: ""
       type: ImageChange
     - type: ConfigChange
-  status: {}
+  status:
+    latestVersion: {}
+    observedGeneration: {}
+    replicas: {}
+    updatedReplicas: {}
+    availableReplicas: {}
+    unavailableReplicas: {}
 kind: List
 metadata: {}
