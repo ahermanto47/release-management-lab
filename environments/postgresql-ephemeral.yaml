@@ -120,10 +120,10 @@ items:
     - type: ConfigChange
   status:
     latestVersion: {}
-    observedGeneration: {}
-    replicas: {}
-    updatedReplicas: {}
-    availableReplicas: {}
-    unavailableReplicas: {}
+    observedGeneration: 1
+    replicas: 1
+    updatedReplicas: 1
+    availableReplicas: 1
+    unavailableReplicas: 0
 kind: List
 metadata: {}
