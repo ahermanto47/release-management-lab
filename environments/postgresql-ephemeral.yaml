@@ -119,7 +119,7 @@ items:
       type: ImageChange
     - type: ConfigChange
   status:
-    latestVersion: {}
+    latestVersion: 1
     observedGeneration: 1
     replicas: 1
     updatedReplicas: 1
