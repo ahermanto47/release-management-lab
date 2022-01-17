@@ -1,0 +1,84 @@
+apiVersion: v1
+items:
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    annotations:
+      template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
+    labels:
+      template: sonarqube-ephemeral-template
+    name: sonar
+  spec:
+    to:
+      kind: Service
+      name: sonar
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      template.alpha.openshift.io/wait-for-ready: "true"
+    labels:
+      template: sonarqube-ephemeral-template
+    name: sonar
+  spec:
+    replicas: 1
+    selector:
+      name: sonar
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: sonar
+      spec:
+        containers:
+        - capabilities: {}
+          image: registry.centos.org/rhsyseng/sonarqube:latest
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /
+              port: 9000
+            initialDelaySeconds: 420
+            timeoutSeconds: 3
+          name: sonarqube
+          ports:
+          - containerPort: 9000
+            protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9000
+            initialDelaySeconds: 3
+            timeoutSeconds: 3
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 2Gi
+          securityContext:
+            capabilities: {}
+            privileged: false
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+    triggers:
+    - type: ConfigChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      template: sonarqube-ephemeral-template
+    name: sonar
+  spec:
+    ports:
+    - port: 9000
+      protocol: TCP
+      targetPort: 9000
+    selector:
+      name: sonar
+    sessionAffinity: None
+    type: ClusterIP
+kind: List
+metadata: {}
