@@ -32,8 +32,7 @@ items:
           name: sonar
       spec:
         containers:
-        - capabilities: {}
-          image: registry.centos.org/rhsyseng/sonarqube:latest
+        - image: registry.centos.org/rhsyseng/sonarqube:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 30
