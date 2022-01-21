@@ -97,12 +97,10 @@ items:
           volumeMounts:
           - mountPath: /var/lib/mysql
             name: volume-uiwfa
-        persistentVolumeClaim:
-          claimName: mysql-data
-        triggers:
-        - type: ConfigChange
         volumes:
         - name: volume-uiwfa
+          persistentVolumeClaim:
+            claimName: mysql-data
 - apiVersion: v1
   kind: Service
   metadata:
@@ -156,6 +154,6 @@ items:
     - ReadWriteOnce
     resources:
       requests:
-        storage: 1Gi
+        storage: 10Gi
 kind: List
 metadata: {}
