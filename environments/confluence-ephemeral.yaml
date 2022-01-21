@@ -144,7 +144,6 @@ items:
       kind: Service
       name: confluence
       weight: 100
-      wildcardPolicy: None
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
