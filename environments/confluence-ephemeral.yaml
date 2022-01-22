@@ -61,74 +61,6 @@ items:
           name: local-home
         - emptyDir: {}
           name: shared-home
-- apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
-  metadata:
-    labels:
-      run: mysql
-    name: mysql
-  spec:
-    replicas: 1
-    selector:
-      run: mysql
-    strategy:
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          run: mysql
-      spec:
-        containers:
-        - env:
-          - name: MYSQL_USER
-            value: confluence
-          - name: MYSQL_PASSWORD
-            value: confluence
-          - name: MYSQL_DATABASE
-            value: confluence
-          - name: MYSQL_ROOT_PASSWORD
-            value: confluence
-          image: docker.io/mysql:5.6
-          imagePullPolicy: IfNotPresent
-          name: mysql
-          securityContext:
-            capabilities: {}
-            privileged: false
-          volumeMounts:
-          - mountPath: /var/lib/mysql
-            name: volume-uiwfa
-        volumes:
-        - name: volume-uiwfa
-          persistentVolumeClaim:
-            claimName: mysql-data
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      run: confluence
-    name: confluence
-  spec:
-    ports:
-    - port: 8090
-      protocol: TCP
-      targetPort: 8090
-    selector:
-      run: confluence
-    type: ClusterIP
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      run: mysql
-    name: mysql
-  spec:
-    ports:
-    - port: 3306
-      protocol: TCP
-      targetPort: 3306
-    selector:
-      run: mysql
-    type: ClusterIP
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
@@ -144,15 +76,5 @@ items:
       kind: Service
       name: confluence
       weight: 100
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: mysql-data
-  spec:
-    accessModes:
-    - ReadWriteOnce
-    resources:
-      requests:
-        storage: 10Gi
 kind: List
 metadata: {}
