@@ -61,6 +61,20 @@ items:
           name: local-home
         - emptyDir: {}
           name: shared-home
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      run: confluence
+    name: confluence
+  spec:
+    ports:
+    - port: 8090
+      protocol: TCP
+      targetPort: 8090
+    selector:
+      run: confluence
+    type: ClusterIP
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
