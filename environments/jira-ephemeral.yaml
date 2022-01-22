@@ -177,7 +177,7 @@ items:
               configMapKeyRef:
                 key: reserved_code_cache
                 name: jira-jvm-config
-          image: atlassian/jira-software:8.13.5
+          image: docker.io/atlassian/jira-software:8.13.5
           imagePullPolicy: Always
           lifecycle:
             preStop:
