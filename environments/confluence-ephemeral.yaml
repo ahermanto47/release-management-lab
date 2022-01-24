@@ -38,7 +38,7 @@ items:
               - name: confluence-server-1
                 mountPath: /var/atlassian/application-data/confluence
               - name: confluence-server-1
-                mountPath: /opt/atlassian/jira/logs
+                mountPath: /opt/atlassian/confluence/logs
                 subPath: log
             terminationMessagePath: /dev/termination-log
             terminationMessagePolicy: File
