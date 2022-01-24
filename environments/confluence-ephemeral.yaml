@@ -50,7 +50,8 @@ items:
         restartPolicy: Always
         terminationGracePeriodSeconds: 30
         dnsPolicy: ClusterFirst
-        securityContext:
+        serviceAccountName: confluence
+        securityContext: 
           fsGroup: 2001
         schedulerName: default-scheduler
 - apiVersion: v1
