@@ -8,19 +8,14 @@ items:
       app: confluence-server
   spec:
     replicas: 1
-    revisionHistoryLimit: 10
-    test: false
     selector:
       app: confluence-server
       deploymentconfig: confluence-server
     template:
       metadata:
-        creationTimestamp: null
         labels:
           app: confluence-server
           deploymentconfig: confluence-server
-        annotations:
-          openshift.io/generated-by: OpenShiftWebConsole
       spec:
         volumes:
           - name: confluence-server-1
@@ -58,30 +53,28 @@ items:
   kind: Service
   metadata:
     labels:
-      run: confluence
-    name: confluence
+      app: confluence-server
+    name: confluence-server
   spec:
     ports:
     - port: 8090
       protocol: TCP
       targetPort: 8090
     selector:
-      run: confluence
+      app: confluence-server
     type: ClusterIP
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
-    annotations:
-      haproxy.router.openshift.io/timeout: 3000s
     labels:
-      run: confluence
-    name: confluence
+      app: confluence-server
+    name: confluence-server
   spec:
     port:
       targetPort: 8090
     to:
       kind: Service
-      name: confluence
+      name: confluence-server
       weight: 100
 kind: List
 metadata: {}
