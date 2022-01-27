@@ -49,6 +49,7 @@ items:
     selector:
       app: jira-software
     type: ClusterIP
+
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:

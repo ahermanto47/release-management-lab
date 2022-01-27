@@ -1,0 +1,146 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: jira-software
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: jira-software
+    template:
+      metadata:
+        labels:
+          app: jira-software
+      spec:
+        restartPolicy: Always
+        serviceAccountName: default
+        schedulerName: default-scheduler
+        terminationGracePeriodSeconds: 30
+        securityContext: {}
+        containers:
+          - resources:
+              requests:
+                cpu: '2'
+                memory: 2G
+            readinessProbe:
+              httpGet:
+                path: /status
+                port: 8080
+                scheme: HTTP
+              initialDelaySeconds: 10
+              timeoutSeconds: 1
+              periodSeconds: 5
+              successThreshold: 1
+              failureThreshold: 30
+            terminationMessagePath: /dev/termination-log
+            lifecycle:
+              preStop:
+                exec:
+                  command:
+                    - sh
+                    - '-c'
+                    - /shutdown-wait.sh
+            name: jira-software
+            env:
+              - name: ATL_TOMCAT_SCHEME
+                value: https
+              - name: ATL_TOMCAT_SECURE
+                value: 'true'
+              - name: SET_PERMISSIONS
+                value: 'true'
+              - name: JIRA_SHARED_HOME
+                value: /var/atlassian/application-data/shared-home
+              - name: JVM_SUPPORT_RECOMMENDED_ARGS
+                valueFrom:
+                  configMapKeyRef:
+                    name: jira-jvm-config
+                    key: additional_jvm_args
+              - name: JVM_MINIMUM_MEMORY
+                valueFrom:
+                  configMapKeyRef:
+                    name: jira-jvm-config
+                    key: min_heap
+              - name: JVM_MAXIMUM_MEMORY
+                valueFrom:
+                  configMapKeyRef:
+                    name: jira-jvm-config
+                    key: max_heap
+              - name: JVM_RESERVED_CODE_CACHE_SIZE
+                valueFrom:
+                  configMapKeyRef:
+                    name: jira-jvm-config
+                    key: reserved_code_cache
+            ports:
+              - name: http
+                containerPort: 8080
+                protocol: TCP
+              - name: ehcache
+                containerPort: 40001
+                protocol: TCP
+              - name: ehcacheobject
+                containerPort: 40011
+                protocol: TCP
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: local-home
+                mountPath: /var/atlassian/application-data/jira
+              - name: local-home
+                mountPath: /opt/atlassian/jira/logs
+                subPath: log
+              - name: shared-home
+                mountPath: /var/atlassian/application-data/shared-home
+            terminationMessagePolicy: File
+            image: 'atlassian/jira-software:8.20.1-jdk11'
+        serviceAccount: default
+        volumes:
+          - name: local-home
+            emptyDir: {}
+          - name: shared-home
+            emptyDir: {}
+        dnsPolicy: ClusterFirst
+    serviceName: jira-software
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        partition: 0
+    revisionHistoryLimit: 10
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: jira-jvm-config
+    labels:
+      app: jira-software
+  data:
+    additional_jvm_args: '-Datlassian.logging.cloud.enabled=false -XX:ActiveProcessorCount=2'
+    max_heap: 768m
+    min_heap: 384m
+    reserved_code_cache: 512m
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: jira-software
+    labels:
+      app: jira-software
+  spec:
+    ports:
+    - port: 8080
+      name: http
+    clusterIP: None
+    selector:
+      app: jira-software
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: jira-software
+  spec:
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: jira-software
+      weight: 100
+kind: List
+metadata: {}
