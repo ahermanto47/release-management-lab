@@ -35,13 +35,6 @@ items:
               successThreshold: 1
               failureThreshold: 30
             terminationMessagePath: /dev/termination-log
-            lifecycle:
-              preStop:
-                exec:
-                  command:
-                    - sh
-                    - '-c'
-                    - /shutdown-wait.sh
             name: jira-software
             env:
               - name: ATL_TOMCAT_SCHEME
