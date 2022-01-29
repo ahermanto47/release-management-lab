@@ -8,3 +8,11 @@ argocd app create release-management-dev --repo https://github.com/ahermanto47/r
 oc create serviceaccount confluence
 
 oc adm policy add-scc-to-user anyuid -z confluence
+
+# manual plugin installations in jenkins
+
+Cucumber Report
+
+Warnings Next Generation
+
+Jacoco
