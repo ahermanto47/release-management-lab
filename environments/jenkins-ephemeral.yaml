@@ -9,6 +9,7 @@ items:
     labels:
       app: jenkins-ephemeral
       template: jenkins-ephemeral-template
+      app.kubernetes.io/part-of: Infrastructure
     name: jenkins
   spec:
     tls:

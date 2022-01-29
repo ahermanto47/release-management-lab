@@ -6,6 +6,7 @@ items:
     name: confluence-server
     labels:
       app: confluence-server
+      app.kubernetes.io/part-of: Infrastructure
   spec:
     replicas: 1
     selector:

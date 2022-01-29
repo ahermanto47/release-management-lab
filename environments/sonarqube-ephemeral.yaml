@@ -7,6 +7,7 @@ items:
       template.openshift.io/expose-uri: http://{.spec.host}{.spec.path}
     labels:
       template: sonarqube-ephemeral-template
+      app.kubernetes.io/part-of: Infrastructure
     name: sonar
   spec:
     to:

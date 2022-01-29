@@ -4,6 +4,8 @@ items:
   kind: StatefulSet
   metadata:
     name: jira-software
+    labels:
+      app.kubernetes.io/part-of: Infrastructure    
   spec:
     replicas: 1
     selector:
@@ -135,5 +137,23 @@ items:
       kind: Service
       name: jira-software
       weight: 100
+#- apiVersion: networking.k8s.io/v1
+#  kind: Ingress
+#  metadata:
+#    name: jira-software
+#  spec:
+#    rules:
+#    - host: jira-software-release-management-dev.apps-crc.testing
+#      http:
+#        paths:
+#        - backend:
+#            service:
+#              name: jira-software
+#              port:
+#                number: 8080
+#          path: /
+#          pathType: Exact
+#    selector:
+#      app: jira-software
 kind: List
 metadata: {}
