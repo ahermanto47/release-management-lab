@@ -1,0 +1,547 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"jira","app.kubernetes.io/version":"8.20.1-jdk11","helm.sh/chart":"jira-1.1.0"},"name":"jira","namespace":"release-management-dev"},"spec":{"replicas":1,"selector":{"matchLabels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/name":"jira"}},"serviceName":"jira","template":{"metadata":{"annotations":{"checksum/config-jvm":"78fb31ff9f2e480bdb5aa04940218504a71cbe91427a49ea588eb2ed06bc361a"},"labels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/name":"jira"}},"spec":{"containers":[{"env":[{"name":"ATL_TOMCAT_SCHEME","value":"https"},{"name":"ATL_TOMCAT_SECURE","value":"true"},{"name":"SET_PERMISSIONS","value":"true"},{"name":"JIRA_SHARED_HOME","value":"/var/atlassian/application-data/shared-home"},{"name":"JVM_SUPPORT_RECOMMENDED_ARGS","valueFrom":{"configMapKeyRef":{"key":"additional_jvm_args","name":"jira-jvm-config"}}},{"name":"JVM_MINIMUM_MEMORY","valueFrom":{"configMapKeyRef":{"key":"min_heap","name":"jira-jvm-config"}}},{"name":"JVM_MAXIMUM_MEMORY","valueFrom":{"configMapKeyRef":{"key":"max_heap","name":"jira-jvm-config"}}},{"name":"JVM_RESERVED_CODE_CACHE_SIZE","valueFrom":{"configMapKeyRef":{"key":"reserved_code_cache","name":"jira-jvm-config"}}}],"image":"atlassian/jira-software:8.20.1-jdk11","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["sh","-c","/shutdown-wait.sh"]}}},"name":"jira","ports":[{"containerPort":8080,"name":"http","protocol":"TCP"},{"containerPort":40001,"name":"ehcache","protocol":"TCP"},{"containerPort":40011,"name":"ehcacheobject","protocol":"TCP"}],"readinessProbe":{"failureThreshold":30,"httpGet":{"path":"/status","port":8080},"initialDelaySeconds":10,"periodSeconds":5},"resources":{"requests":{"cpu":"2","memory":"2G"}},"volumeMounts":[{"mountPath":"/var/atlassian/application-data/jira","name":"local-home"},{"mountPath":"/opt/atlassian/jira/logs","name":"local-home","subPath":"log"},{"mountPath":"/var/atlassian/application-data/shared-home","name":"shared-home"}]}],"initContainers":[{"command":["sh","-c","(chgrp
+      2001 /shared-home; chmod g+w
+      /shared-home)"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"nfs-permission-fixer","securityContext":{"runAsUser":0},"volumeMounts":[{"mountPath":"/shared-home","name":"shared-home"}]}],"securityContext":{"fsGroup":2001},"serviceAccountName":"default","terminationGracePeriodSeconds":30,"volumes":[{"emptyDir":{},"name":"local-home"},{"emptyDir":{},"name":"shared-home"}]}}}}
+  resourceVersion: '327067'
+  name: jira
+  uid: a843aa4a-56a1-4c28-b8e3-97e20678e592
+  creationTimestamp: '2022-01-20T14:49:07Z'
+  generation: 1
+  managedFields:
+    - manager: argocd-application-controller
+      operation: Update
+      apiVersion: apps/v1
+      time: '2022-01-20T14:49:07Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+            'f:helm.sh/chart': {}
+        'f:spec':
+          'f:podManagementPolicy': {}
+          'f:replicas': {}
+          'f:revisionHistoryLimit': {}
+          'f:selector': {}
+          'f:serviceName': {}
+          'f:template':
+            'f:metadata':
+              'f:annotations':
+                .: {}
+                'f:checksum/config-jvm': {}
+              'f:labels':
+                .: {}
+                'f:app.kubernetes.io/instance': {}
+                'f:app.kubernetes.io/name': {}
+            'f:spec':
+              'f:volumes':
+                .: {}
+                'k:{"name":"local-home"}':
+                  .: {}
+                  'f:emptyDir': {}
+                  'f:name': {}
+                'k:{"name":"shared-home"}':
+                  .: {}
+                  'f:emptyDir': {}
+                  'f:name': {}
+              'f:containers':
+                'k:{"name":"jira"}':
+                  'f:image': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/opt/atlassian/jira/logs"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                      'f:subPath': {}
+                    'k:{"mountPath":"/var/atlassian/application-data/jira"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                    'k:{"mountPath":"/var/atlassian/application-data/shared-home"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                  'f:terminationMessagePolicy': {}
+                  .: {}
+                  'f:resources':
+                    .: {}
+                    'f:requests':
+                      .: {}
+                      'f:cpu': {}
+                      'f:memory': {}
+                  'f:lifecycle':
+                    .: {}
+                    'f:preStop':
+                      .: {}
+                      'f:exec':
+                        .: {}
+                        'f:command': {}
+                  'f:env':
+                    'k:{"name":"JVM_MAXIMUM_MEMORY"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"ATL_TOMCAT_SCHEME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"JIRA_SHARED_HOME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    .: {}
+                    'k:{"name":"JVM_SUPPORT_RECOMMENDED_ARGS"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"JVM_MINIMUM_MEMORY"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"SET_PERMISSIONS"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"JVM_RESERVED_CODE_CACHE_SIZE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:valueFrom':
+                        .: {}
+                        'f:configMapKeyRef': {}
+                    'k:{"name":"ATL_TOMCAT_SECURE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                  'f:readinessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
+                      .: {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:terminationMessagePath': {}
+                  'f:imagePullPolicy': {}
+                  'f:ports':
+                    .: {}
+                    'k:{"containerPort":8080,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:name': {}
+                      'f:protocol': {}
+                    'k:{"containerPort":40001,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:name': {}
+                      'f:protocol': {}
+                    'k:{"containerPort":40011,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:name': {}
+                      'f:protocol': {}
+                  'f:name': {}
+              'f:dnsPolicy': {}
+              'f:serviceAccount': {}
+              'f:restartPolicy': {}
+              'f:schedulerName': {}
+              'f:terminationGracePeriodSeconds': {}
+              'f:initContainers':
+                .: {}
+                'k:{"name":"nfs-permission-fixer"}':
+                  'f:image': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/shared-home"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                  'f:terminationMessagePolicy': {}
+                  .: {}
+                  'f:resources': {}
+                  'f:command': {}
+                  'f:securityContext':
+                    .: {}
+                    'f:runAsUser': {}
+                  'f:terminationMessagePath': {}
+                  'f:imagePullPolicy': {}
+                  'f:name': {}
+              'f:serviceAccountName': {}
+              'f:securityContext':
+                .: {}
+                'f:fsGroup': {}
+          'f:updateStrategy':
+            'f:rollingUpdate':
+              .: {}
+              'f:partition': {}
+            'f:type': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: apps/v1
+      time: '2022-01-20T14:49:22Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:currentReplicas': {}
+          'f:currentRevision': {}
+          'f:updatedReplicas': {}
+          'f:readyReplicas': {}
+          'f:replicas': {}
+          'f:availableReplicas': {}
+          'f:collisionCount': {}
+          'f:observedGeneration': {}
+          'f:updateRevision': {}
+      subresource: status
+  namespace: release-management-dev
+  labels:
+    app.kubernetes.io/instance: jira
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jira
+    app.kubernetes.io/version: 8.20.1-jdk11
+    helm.sh/chart: jira-1.1.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: jira
+      app.kubernetes.io/name: jira
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: jira
+        app.kubernetes.io/name: jira
+      annotations:
+        checksum/config-jvm: 78fb31ff9f2e480bdb5aa04940218504a71cbe91427a49ea588eb2ed06bc361a
+    spec:
+      restartPolicy: Always
+      initContainers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: nfs-permission-fixer
+          command:
+            - sh
+            - '-c'
+            - (chgrp 2001 /shared-home; chmod g+w /shared-home)
+          securityContext:
+            runAsUser: 0
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: shared-home
+              mountPath: /shared-home
+          terminationMessagePolicy: File
+          image: alpine
+      serviceAccountName: default
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        fsGroup: 2001
+      containers:
+        - resources:
+            requests:
+              cpu: '2'
+              memory: 2G
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 30
+          terminationMessagePath: /dev/termination-log
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - '-c'
+                  - /shutdown-wait.sh
+          name: jira
+          env:
+            - name: ATL_TOMCAT_SCHEME
+              value: https
+            - name: ATL_TOMCAT_SECURE
+              value: 'true'
+            - name: SET_PERMISSIONS
+              value: 'true'
+            - name: JIRA_SHARED_HOME
+              value: /var/atlassian/application-data/shared-home
+            - name: JVM_SUPPORT_RECOMMENDED_ARGS
+              valueFrom:
+                configMapKeyRef:
+                  name: jira-jvm-config
+                  key: additional_jvm_args
+            - name: JVM_MINIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: jira-jvm-config
+                  key: min_heap
+            - name: JVM_MAXIMUM_MEMORY
+              valueFrom:
+                configMapKeyRef:
+                  name: jira-jvm-config
+                  key: max_heap
+            - name: JVM_RESERVED_CODE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: jira-jvm-config
+                  key: reserved_code_cache
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: ehcache
+              containerPort: 40001
+              protocol: TCP
+            - name: ehcacheobject
+              containerPort: 40011
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: local-home
+              mountPath: /var/atlassian/application-data/jira
+            - name: local-home
+              mountPath: /opt/atlassian/jira/logs
+              subPath: log
+            - name: shared-home
+              mountPath: /var/atlassian/application-data/shared-home
+          terminationMessagePolicy: File
+          image: 'atlassian/jira-software:8.20.1-jdk11'
+      serviceAccount: default
+      volumes:
+        - name: local-home
+          emptyDir: {}
+        - name: shared-home
+          emptyDir: {}
+      dnsPolicy: ClusterFirst
+  serviceName: jira
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
+status:
+  observedGeneration: 1
+  availableReplicas: 1
+  updateRevision: jira-6b6b9fcdf
+  currentRevision: jira-6b6b9fcdf
+  currentReplicas: 1
+  updatedReplicas: 1
+  replicas: 1
+  collisionCount: 0
+  readyReplicas: 1
+  
+---
+  
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: jira-jvm-config
+  namespace: release-management-dev
+  uid: dcf3f355-f459-4aa3-9d4d-4fa8d579a5f0
+  resourceVersion: '326987'
+  creationTimestamp: '2022-01-20T14:49:07Z'
+  labels:
+    app.kubernetes.io/instance: jira
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jira
+    app.kubernetes.io/version: 8.20.1-jdk11
+    helm.sh/chart: jira-1.1.0
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"v1","data":{"additional_jvm_args":"-Datlassian.logging.cloud.enabled=false
+      -XX:ActiveProcessorCount=2","max_heap":"768m","min_heap":"384m","reserved_code_cache":"512m"},"kind":"ConfigMap","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"jira","app.kubernetes.io/version":"8.20.1-jdk11","helm.sh/chart":"jira-1.1.0"},"name":"jira-jvm-config","namespace":"release-management-dev"}}
+  managedFields:
+    - manager: argocd-application-controller
+      operation: Update
+      apiVersion: v1
+      time: '2022-01-20T14:49:07Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:data':
+          .: {}
+          'f:additional_jvm_args': {}
+          'f:max_heap': {}
+          'f:min_heap': {}
+          'f:reserved_code_cache': {}
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+            'f:helm.sh/chart': {}
+data:
+  additional_jvm_args: '-Datlassian.logging.cloud.enabled=false -XX:ActiveProcessorCount=2'
+  max_heap: 768m
+  min_heap: 384m
+  reserved_code_cache: 512m
+  
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: jira
+  namespace: release-management-dev
+  uid: fdadcdb2-bc80-4c4a-bcb0-429eff350993
+  resourceVersion: '326989'
+  creationTimestamp: '2022-01-20T14:49:07Z'
+  labels:
+    app.kubernetes.io/instance: jira
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jira
+    app.kubernetes.io/version: 8.20.1-jdk11
+    helm.sh/chart: jira-1.1.0
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"jira","app.kubernetes.io/version":"8.20.1-jdk11","helm.sh/chart":"jira-1.1.0"},"name":"jira","namespace":"release-management-dev"},"spec":{"ports":[{"name":"http","port":80,"protocol":"TCP","targetPort":"http"}],"selector":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/name":"jira"},"type":"ClusterIP"}}
+  managedFields:
+    - manager: argocd-application-controller
+      operation: Update
+      apiVersion: v1
+      time: '2022-01-20T14:49:07Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+            'f:helm.sh/chart': {}
+        'f:spec':
+          'f:internalTrafficPolicy': {}
+          'f:ports':
+            .: {}
+            'k:{"port":80,"protocol":"TCP"}':
+              .: {}
+              'f:name': {}
+              'f:port': {}
+              'f:protocol': {}
+              'f:targetPort': {}
+          'f:selector': {}
+          'f:sessionAffinity': {}
+          'f:type': {}
+spec:
+  clusterIP: 10.217.4.105
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+  internalTrafficPolicy: Cluster
+  clusterIPs:
+    - 10.217.4.105
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app.kubernetes.io/instance: jira
+    app.kubernetes.io/name: jira
+status:
+  loadBalancer: {}
+
+---
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: >
+      {"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"annotations":{"kubernetes.io/ingress.class":"nginx","nginx.ingress.kubernetes.io/affinity":"cookie","nginx.ingress.kubernetes.io/affinity-mode":"persistent","nginx.ingress.kubernetes.io/proxy-body-size":"250m","nginx.ingress.kubernetes.io/proxy-connect-timeout":"60","nginx.ingress.kubernetes.io/proxy-read-timeout":"60","nginx.ingress.kubernetes.io/proxy-send-timeout":"60"},"labels":{"app.kubernetes.io/instance":"jira","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"jira","app.kubernetes.io/version":"8.20.1-jdk11","helm.sh/chart":"jira-1.1.0"},"name":"jira","namespace":"release-management-dev"},"spec":{"rules":[{"host":null,"http":{"paths":[{"backend":{"service":{"name":"jira","port":{"number":80}}},"path":"/","pathType":"Prefix"}]}}]}}
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/proxy-body-size: 250m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: '60'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '60'
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '60'
+  resourceVersion: '326997'
+  name: jira
+  uid: a965b191-09b4-4011-9c66-94c1c5bd0cb1
+  creationTimestamp: '2022-01-20T14:49:07Z'
+  generation: 1
+  managedFields:
+    - manager: argocd-application-controller
+      operation: Update
+      apiVersion: networking.k8s.io/v1
+      time: '2022-01-20T14:49:07Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            'f:kubectl.kubernetes.io/last-applied-configuration': {}
+            'f:nginx.ingress.kubernetes.io/affinity-mode': {}
+            'f:nginx.ingress.kubernetes.io/affinity': {}
+            'f:kubernetes.io/ingress.class': {}
+            'f:nginx.ingress.kubernetes.io/proxy-read-timeout': {}
+            'f:nginx.ingress.kubernetes.io/proxy-body-size': {}
+            .: {}
+            'f:nginx.ingress.kubernetes.io/proxy-send-timeout': {}
+            'f:nginx.ingress.kubernetes.io/proxy-connect-timeout': {}
+          'f:labels':
+            .: {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/managed-by': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/version': {}
+            'f:helm.sh/chart': {}
+        'f:spec':
+          'f:rules': {}
+  namespace: release-management-dev
+  labels:
+    app.kubernetes.io/instance: jira
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: jira
+    app.kubernetes.io/version: 8.20.1-jdk11
+    helm.sh/chart: jira-1.1.0
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jira
+                port:
+                  number: 80
+status:
+  loadBalancer: {}
+

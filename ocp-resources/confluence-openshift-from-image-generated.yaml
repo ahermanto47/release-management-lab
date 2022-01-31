@@ -1,0 +1,229 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  resourceVersion: '49178'
+  name: confluence-server
+  uid: 251a0ff3-f73d-4086-b283-0be5e39c5779
+  creationTimestamp: '2022-01-24T14:29:34Z'
+  generation: 2
+  managedFields:
+    - manager: Mozilla
+      operation: Update
+      apiVersion: apps.openshift.io/v1
+      time: '2022-01-24T14:29:34Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:openshift.io/generated-by': {}
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:app.kubernetes.io/component': {}
+            'f:app.kubernetes.io/instance': {}
+            'f:app.kubernetes.io/name': {}
+            'f:app.kubernetes.io/part-of': {}
+            'f:app.openshift.io/runtime-namespace': {}
+        'f:spec':
+          'f:replicas': {}
+          'f:selector':
+            .: {}
+            'f:app': {}
+            'f:deploymentconfig': {}
+          'f:strategy':
+            'f:activeDeadlineSeconds': {}
+            'f:rollingParams':
+              .: {}
+              'f:intervalSeconds': {}
+              'f:maxSurge': {}
+              'f:maxUnavailable': {}
+              'f:timeoutSeconds': {}
+              'f:updatePeriodSeconds': {}
+            'f:type': {}
+          'f:template':
+            .: {}
+            'f:metadata':
+              .: {}
+              'f:annotations':
+                .: {}
+                'f:openshift.io/generated-by': {}
+              'f:creationTimestamp': {}
+              'f:labels':
+                .: {}
+                'f:app': {}
+                'f:deploymentconfig': {}
+            'f:spec':
+              .: {}
+              'f:containers':
+                .: {}
+                'k:{"name":"confluence-server"}':
+                  .: {}
+                  'f:imagePullPolicy': {}
+                  'f:name': {}
+                  'f:ports':
+                    .: {}
+                    'k:{"containerPort":8090,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:protocol': {}
+                    'k:{"containerPort":8091,"protocol":"TCP"}':
+                      .: {}
+                      'f:containerPort': {}
+                      'f:protocol': {}
+                  'f:resources': {}
+                  'f:terminationMessagePath': {}
+                  'f:terminationMessagePolicy': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/var/atlassian/application-data/confluence"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+              'f:dnsPolicy': {}
+              'f:restartPolicy': {}
+              'f:schedulerName': {}
+              'f:securityContext': {}
+              'f:terminationGracePeriodSeconds': {}
+              'f:volumes':
+                .: {}
+                'k:{"name":"confluence-server-1"}':
+                  .: {}
+                  'f:emptyDir': {}
+                  'f:name': {}
+    - manager: openshift-controller-manager
+      operation: Update
+      apiVersion: apps.openshift.io/v1
+      time: '2022-01-24T14:29:37Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:spec':
+          'f:template':
+            'f:spec':
+              'f:containers':
+                'k:{"name":"confluence-server"}':
+                  'f:image': {}
+          'f:triggers': {}
+        'f:status':
+          'f:conditions':
+            .: {}
+            'k:{"type":"Available"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Progressing"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:status': {}
+              'f:type': {}
+          'f:details':
+            .: {}
+            'f:causes': {}
+            'f:message': {}
+          'f:latestVersion': {}
+          'f:observedGeneration': {}
+          'f:replicas': {}
+          'f:unavailableReplicas': {}
+          'f:updatedReplicas': {}
+  namespace: release-management-dev
+  labels:
+    app: confluence-server
+    app.kubernetes.io/component: confluence-server
+    app.kubernetes.io/instance: confluence-server
+    app.kubernetes.io/name: confluence-server
+    app.kubernetes.io/part-of: confluence-server-app
+    app.openshift.io/runtime-namespace: release-management-dev
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - confluence-server
+        from:
+          kind: ImageStreamTag
+          namespace: release-management-dev
+          name: 'confluence-server:7'
+        lastTriggeredImage: >-
+          image-registry.openshift-image-registry.svc:5000/release-management-dev/confluence-server@sha256:c2822f606f2cafc970f497f31162d11bdbf8c8568e308276fe7cd1bafa286609
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    app: confluence-server
+    deploymentconfig: confluence-server
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: confluence-server
+        deploymentconfig: confluence-server
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+    spec:
+      volumes:
+        - name: confluence-server-1
+          emptyDir: {}
+      containers:
+        - name: confluence-server
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/release-management-dev/confluence-server@sha256:c2822f606f2cafc970f497f31162d11bdbf8c8568e308276fe7cd1bafa286609
+          ports:
+            - containerPort: 8090
+              protocol: TCP
+            - containerPort: 8091
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: confluence-server-1
+              mountPath: /var/atlassian/application-data/confluence
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+status:
+  latestVersion: 1
+  observedGeneration: 2
+  replicas: 1
+  updatedReplicas: 1
+  availableReplicas: 0
+  unavailableReplicas: 1
+  details:
+    message: config change
+    causes:
+      - type: ConfigChange
+  conditions:
+    - type: Available
+      status: 'False'
+      lastUpdateTime: '2022-01-24T14:29:34Z'
+      lastTransitionTime: '2022-01-24T14:29:34Z'
+      message: Deployment config does not have minimum availability.
+    - type: Progressing
+      status: Unknown
+      lastUpdateTime: '2022-01-24T14:29:35Z'
+      lastTransitionTime: '2022-01-24T14:29:35Z'
+      message: >-
+        replication controller "confluence-server-1" is waiting for pod
+        "confluence-server-1-deploy" to run

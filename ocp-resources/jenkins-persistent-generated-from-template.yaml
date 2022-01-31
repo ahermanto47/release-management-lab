@@ -1,0 +1,412 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: 'true'
+  resourceVersion: '38159'
+  name: jenkins
+  uid: 6027c378-c6c6-4831-b1d4-4a104819aa5c
+  creationTimestamp: '2022-01-24T13:44:30Z'
+  generation: 2
+  managedFields:
+    - manager: openshift-controller-manager
+      operation: Update
+      apiVersion: apps.openshift.io/v1
+      time: '2022-01-24T13:45:10Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:template.alpha.openshift.io/wait-for-ready': {}
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:template': {}
+            'f:template.openshift.io/template-instance-owner': {}
+        'f:spec':
+          'f:replicas': {}
+          'f:selector':
+            .: {}
+            'f:name': {}
+          'f:strategy':
+            'f:activeDeadlineSeconds': {}
+            'f:recreateParams':
+              .: {}
+              'f:timeoutSeconds': {}
+            'f:type': {}
+          'f:template':
+            .: {}
+            'f:metadata':
+              .: {}
+              'f:creationTimestamp': {}
+              'f:labels':
+                .: {}
+                'f:name': {}
+            'f:spec':
+              'f:volumes':
+                .: {}
+                'k:{"name":"jenkins-data"}':
+                  .: {}
+                  'f:name': {}
+                  'f:persistentVolumeClaim':
+                    .: {}
+                    'f:claimName': {}
+                'k:{"name":"jenkins-trusted-ca-bundle"}':
+                  .: {}
+                  'f:configMap':
+                    .: {}
+                    'f:defaultMode': {}
+                    'f:name': {}
+                    'f:optional': {}
+                  'f:name': {}
+              'f:containers':
+                .: {}
+                'k:{"name":"jenkins"}':
+                  'f:image': {}
+                  'f:volumeMounts':
+                    .: {}
+                    'k:{"mountPath":"/etc/pki/ca-trust/source/anchors"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                    'k:{"mountPath":"/var/lib/jenkins"}':
+                      .: {}
+                      'f:mountPath': {}
+                      'f:name': {}
+                  'f:terminationMessagePolicy': {}
+                  .: {}
+                  'f:resources':
+                    .: {}
+                    'f:limits':
+                      .: {}
+                      'f:memory': {}
+                  'f:livenessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
+                      .: {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:env':
+                    'k:{"name":"JENKINS_SERVICE_NAME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"DISABLE_ADMINISTRATIVE_MONITORS"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"OPENSHIFT_ENABLE_OAUTH"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"KUBERNETES_MASTER"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    .: {}
+                    'k:{"name":"CASC_JENKINS_CONFIG"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"KUBERNETES_TRUST_CERTIFICATES"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"OPENSHIFT_ENABLE_REDIRECT_PROMPT"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"JENKINS_UC_INSECURE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"ENABLE_FATAL_ERROR_LOG_FILE"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                    'k:{"name":"JNLP_SERVICE_NAME"}':
+                      .: {}
+                      'f:name': {}
+                      'f:value': {}
+                  'f:readinessProbe':
+                    .: {}
+                    'f:failureThreshold': {}
+                    'f:httpGet':
+                      .: {}
+                      'f:path': {}
+                      'f:port': {}
+                      'f:scheme': {}
+                    'f:initialDelaySeconds': {}
+                    'f:periodSeconds': {}
+                    'f:successThreshold': {}
+                    'f:timeoutSeconds': {}
+                  'f:securityContext':
+                    .: {}
+                    'f:capabilities': {}
+                    'f:privileged': {}
+                  'f:terminationMessagePath': {}
+                  'f:imagePullPolicy': {}
+                  'f:name': {}
+              'f:dnsPolicy': {}
+              'f:serviceAccount': {}
+              'f:restartPolicy': {}
+              .: {}
+              'f:schedulerName': {}
+              'f:terminationGracePeriodSeconds': {}
+              'f:serviceAccountName': {}
+              'f:securityContext': {}
+          'f:triggers': {}
+        'f:status':
+          'f:updatedReplicas': {}
+          'f:readyReplicas': {}
+          'f:conditions':
+            .: {}
+            'k:{"type":"Available"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:status': {}
+              'f:type': {}
+            'k:{"type":"Progressing"}':
+              .: {}
+              'f:lastTransitionTime': {}
+              'f:lastUpdateTime': {}
+              'f:message': {}
+              'f:reason': {}
+              'f:status': {}
+              'f:type': {}
+          'f:details':
+            .: {}
+            'f:causes': {}
+            'f:message': {}
+          'f:replicas': {}
+          'f:availableReplicas': {}
+          'f:observedGeneration': {}
+          'f:unavailableReplicas': {}
+          'f:latestVersion': {}
+  namespace: default
+  labels:
+    app: jenkins-persistent
+    template: jenkins-persistent-template
+    template.openshift.io/template-instance-owner: 0289fa9b-f5c2-4f4c-b06b-d83120461c8e
+spec:
+  strategy:
+    type: Recreate
+    resources: {}
+    activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - jenkins
+        from:
+          kind: ImageStreamTag
+          name: 'jenkins:2'
+          namespace: openshift
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    name: jenkins
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: jenkins
+    spec:
+      restartPolicy: Always
+      serviceAccountName: jenkins
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources:
+            limits:
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 3
+            timeoutSeconds: 240
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: jenkins
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 420
+            timeoutSeconds: 240
+            periodSeconds: 360
+            successThreshold: 1
+            failureThreshold: 2
+          env:
+            - name: OPENSHIFT_ENABLE_OAUTH
+              value: 'true'
+            - name: OPENSHIFT_ENABLE_REDIRECT_PROMPT
+              value: 'true'
+            - name: DISABLE_ADMINISTRATIVE_MONITORS
+              value: 'false'
+            - name: KUBERNETES_MASTER
+              value: 'https://kubernetes.default:443'
+            - name: KUBERNETES_TRUST_CERTIFICATES
+              value: 'true'
+            - name: JENKINS_SERVICE_NAME
+              value: jenkins
+            - name: JNLP_SERVICE_NAME
+              value: jenkins-jnlp
+            - name: ENABLE_FATAL_ERROR_LOG_FILE
+              value: 'false'
+            - name: JENKINS_UC_INSECURE
+              value: 'false'
+            - name: CASC_JENKINS_CONFIG
+              value: /var/lib/jenkins/proxy.yaml
+          securityContext:
+            capabilities: {}
+            privileged: false
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: jenkins-data
+              mountPath: /var/lib/jenkins
+            - name: jenkins-trusted-ca-bundle
+              mountPath: /etc/pki/ca-trust/source/anchors
+          terminationMessagePolicy: File
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/openshift/jenkins@sha256:d7e1bd7ac57af9bb4c5e70e3dd78cb878640a24d8094ff0c2130dbcf65cf7e6a
+      serviceAccount: jenkins
+      volumes:
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins
+        - name: jenkins-trusted-ca-bundle
+          configMap:
+            name: jenkins-trusted-ca-bundle
+            defaultMode: 420
+            optional: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets: []
+  paused: false
+status:
+  observedGeneration: 2
+  details:
+    message: config change
+    causes:
+      - type: ConfigChange
+  availableReplicas: 1
+  unavailableReplicas: 0
+  latestVersion: 1
+  updatedReplicas: 1
+  conditions:
+    - type: Available
+      status: 'True'
+      lastUpdateTime: '2022-01-24T13:45:10Z'
+      lastTransitionTime: '2022-01-24T13:45:10Z'
+      message: Deployment config has minimum availability.
+    - type: Progressing
+      status: 'True'
+      lastUpdateTime: '2022-01-24T13:45:10Z'
+      lastTransitionTime: '2022-01-24T13:45:10Z'
+      reason: NewReplicationControllerAvailable
+      message: replication controller "jenkins-1" successfully rolled out
+  replicas: 1
+  readyReplicas: 1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  annotations:
+    pv.kubernetes.io/bind-completed: 'yes'
+    pv.kubernetes.io/bound-by-controller: 'yes'
+  resourceVersion: '37943'
+  name: jenkins
+  uid: 1a126825-0688-4076-9743-34a642f8796d
+  creationTimestamp: '2022-01-24T13:44:30Z'
+  managedFields:
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2022-01-24T13:44:30Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:annotations':
+            .: {}
+            'f:pv.kubernetes.io/bind-completed': {}
+            'f:pv.kubernetes.io/bound-by-controller': {}
+        'f:spec':
+          'f:volumeName': {}
+    - manager: kube-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2022-01-24T13:44:30Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:status':
+          'f:accessModes': {}
+          'f:capacity':
+            .: {}
+            'f:storage': {}
+          'f:phase': {}
+      subresource: status
+    - manager: openshift-controller-manager
+      operation: Update
+      apiVersion: v1
+      time: '2022-01-24T13:44:30Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata':
+          'f:labels':
+            .: {}
+            'f:app': {}
+            'f:template': {}
+            'f:template.openshift.io/template-instance-owner': {}
+        'f:spec':
+          'f:accessModes': {}
+          'f:resources':
+            'f:requests':
+              .: {}
+              'f:storage': {}
+          'f:volumeMode': {}
+  namespace: default
+  finalizers:
+    - kubernetes.io/pvc-protection
+  labels:
+    app: jenkins-persistent
+    template: jenkins-persistent-template
+    template.openshift.io/template-instance-owner: 0289fa9b-f5c2-4f4c-b06b-d83120461c8e
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: pv0007
+  volumeMode: Filesystem
+status:
+  phase: Bound
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+    - ReadOnlyMany
+  capacity:
+    storage: 100Gi
+    
+
+ 
