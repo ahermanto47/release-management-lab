@@ -67,6 +67,11 @@ items:
                   configMapKeyRef:
                     name: jira-jvm-config
                     key: reserved_code_cache
+              - name: JIRA_SETUP_LICENSE
+                valueFrom:
+                  secretKeyRef:
+                    name: jira-license-secret
+                    key: license-key
             ports:
               - name: http
                 containerPort: 8080

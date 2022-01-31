@@ -115,3 +115,5 @@ oc login -u kubeadmin -p 3qrGx-twayC-bguj2-BaRUa
 oc create serviceaccount confluence
 
 oc adm policy add-scc-to-user anyuid -z confluence
+
+oc create secret generic jira-license-secret --from-literal=license-key='<product_license_key>'
