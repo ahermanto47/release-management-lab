@@ -58,12 +58,6 @@ oc apply -f jira-ephemeral-template.yaml
 
 oc project default
 
-oc delete dc confluence
-
-oc delete service mysql
-
-oc delete service confluence
-
 oc delete pvc confluence
 
 oc delete dc confluence
