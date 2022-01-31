@@ -1,139 +1,122 @@
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>oc login --token=sha256~4BMiYFEXWza4iD5Wy5kyEBcOUbu_4eVfgdzffSIZh3M --server=https://api.crc.testing:6443
+oc login --token=sha256~4BMiYFEXWza4iD5Wy5kyEBcOUbu_4eVfgdzffSIZh3M --server=https://api.crc.testing:6443
 
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>oc get pods
+oc get pods
 
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>argocd login --sso argocd-server-argocd.apps-crc.testing
+argocd login --sso argocd-server-argocd.apps-crc.testing
 
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>argocd cluster list
+argocd cluster list
 
 argocd cluster add argocd/api-crc-testing:6443/kubeadmin
 
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc>argocd app delete release-management-dev
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\sonarqube-ocp>oc create -f ocp-resources\sonarqube-ephemeral-template.yaml
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\sonarqube-ocp> oc process sonarqube-ephemeral -o yaml
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\environments> oc process sonarqube-ephemeral -o yaml > sonarqube-ephemeral-template.yaml
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\environments>argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\environments>argocd app delete release-management-dev -path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\environments>argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\environments>oc login --token=sha256~ECecsGU2sMBNMkbgNIB_8Sy07E20L8NFt8Urj4M8Zc8 --server=https://api.crc.testing:6443
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\ocp-resources>oc apply -f jira-ephemeral-template.yaml
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\ocp-resources>oc new-app confluence
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\ocp-resources>oc delete confluence
-
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\ocp-resources>doskey /history
-cd sonarqube-ocp
-dir
-oc create -f ocp-resources\sonarqube-ephemeral-template.yaml
- oc process openshift//sonarqube-ephemeral
- oc process openshift//sonarqube-ephemeral-template -o yaml
- oc process sonarqube-ephemeral -o yaml
-cd ..
-cd git
-dir
-cd release-management-lab
-dir
-cd environments
-dir
-oc process sonarqube-ephemeral -o yaml > sonarqube-ephemeral-template.yaml
-argocd app delete release-management-dev
 argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
-oc get pods
+
+argocd app delete release-management-dev
+
+oc create -f ocp-resources\sonarqube-ephemeral-template.yaml
+
+oc process sonarqube-ephemeral -o yaml
+
+ oc process sonarqube-ephemeral -o yaml > sonarqube-ephemeral-template.yaml
+
+argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
+
+argocd app delete release-management-dev -path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
+
+argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
+
 oc login --token=sha256~ECecsGU2sMBNMkbgNIB_8Sy07E20L8NFt8Urj4M8Zc8 --server=https://api.crc.testing:6443
-argocd login --sso https://argocd-server-argocd.apps-crc.testing/
-argocd login --sso argocd-server-argocd.apps-crc.testing
-pwd
-dir
-cd ..
-dir
-cd ocp-resources
-dir
+
 oc apply -f jira-ephemeral-template.yaml
-oc project default
-oc apply -f jira-ephemeral-template.yaml
+
 oc new-app confluence
+
 oc delete confluence
-oc delete dc confluence
-oc delete service mysql
-oc delete service confluence
-oc delete pvc confluence
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-oc delete dc confluence
-oc delete dc mysql
-oc delete service confluence
-oc delete service mysql
-oc delete route confluence
-oc delete pvc confluence
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
+
 doskey /history
 
-C:\Users\Andi.Hermanto\openshift-workspace\bsc\git\release-management-lab\ocp-resources>doskey /history
-oc delete -f jira-ephemeral-template.yaml
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-cleanup.bat
-oc delete -f jira-ephemeral-template.yaml
+oc create -f ocp-resources\sonarqube-ephemeral-template.yaml
+
+oc process openshift//sonarqube-ephemeral
+
+oc process openshift//sonarqube-ephemeral-template -o yaml
+
+oc process sonarqube-ephemeral -o yaml
+
+oc process sonarqube-ephemeral -o yaml > sonarqube-ephemeral-template.yaml
+
+argocd app delete release-management-dev
+
+argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
+
 oc get pods
-oc login -u kubeadmin -p dQZKZ-MQJSY-Bb2zD-xF9fs
+
+oc login --token=sha256~ECecsGU2sMBNMkbgNIB_8Sy07E20L8NFt8Urj4M8Zc8 --server=https://api.crc.testing:6443
+
+argocd login --sso argocd-server-argocd.apps-crc.testing
+
 oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-cleanup.bat
-oc delete -f jira-ephemeral-template.yaml
-oc create serviceaccount jira
-oc adm policy add-scc-to-user anyuid -z jira
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-cleanup.bat
-oc delete -f jira-ephemeral-template.yaml
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-oc create serviceaccount jira
-oc adm policy add-scc-to-user anyuid -z jira
-cleanup.bat
-oc delete -f jira-ephemeral-template.yaml
-oc create serviceaccount jira
-oc adm policy add-scc-to-user anyuid -z jira
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-cleanup.bat
-oc delete -f jira-ephemeral-template.yaml
-oc apply -f jira-ephemeral-template.yaml
-oc new-app confluence
-oc delete -f confluence-ephemeral-template.yaml
-cleanup.bat
-oc apply -f confluence-ephemeral-template.yaml
-oc new-app confluence
-cleanup.bat
-oc process confluence -o yaml
-cd ..
-ls
-dir
-cd environments
-dir
-oc process confluence -o yaml > confluence-ephemeral.yaml
-oc apply -f confluence-ephemeral.yaml
-dir
-cd ..
-cd ocp-resources
-cleanup.bat
-argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-
-management-dev --sync-policy automated
+
+oc project default
+
+oc delete dc confluence
+
+oc delete service mysql
+
+oc delete service confluence
+
+oc delete pvc confluence
+
+oc delete dc confluence
+
+oc delete dc mysql
+
+oc delete service confluence
+
+oc delete service mysql
+
+oc delete route confluence
+
+oc delete pvc confluence
+
 doskey /history
 
+oc delete -f jira-ephemeral-template.yaml
+
+cleanup.bat
+
+oc get pods
+
 oc login -u kubeadmin -p dQZKZ-MQJSY-Bb2zD-xF9fs
+
+oc create serviceaccount jira
+
+oc adm policy add-scc-to-user anyuid -z jira
+
+oc create serviceaccount jira
+
+oc adm policy add-scc-to-user anyuid -z jira
+
+oc create serviceaccount jira
+
+oc adm policy add-scc-to-user anyuid -z jira
+
+oc delete -f confluence-ephemeral-template.yaml
+
+oc apply -f confluence-ephemeral-template.yaml
+
+oc new-app confluence
+
+oc process confluence -o yaml
+
+oc process confluence -o yaml > confluence-ephemeral.yaml
+
+oc apply -f confluence-ephemeral.yaml
+
+argocd app create release-management-dev --repo https://github.com/ahermanto47/release-management-lab.git --path environments --dest-server https://api.crc.testing:6443 --dest-namespace release-management-dev --sync-policy automated
+
+doskey /history
+
+oc login -u kubeadmin -p 3qrGx-twayC-bguj2-BaRUa
 
 oc create serviceaccount confluence
 

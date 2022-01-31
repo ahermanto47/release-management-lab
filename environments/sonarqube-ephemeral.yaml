@@ -33,7 +33,7 @@ items:
           name: sonar
       spec:
         containers:
-        - image: registry.centos.org/rhsyseng/sonarqube:latest
+        - image: sonarqube:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 30
