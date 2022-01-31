@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: "my-springboot-jenkins-docker-pipeline"
+  spec:
+    strategy:
+      type: "JenkinsPipeline"
+      jenkinsPipelineStrategy:
+        env:
+          - name: "TARGETNS"
+            value: "release-management-dev"
+          - name: "APPNAME"
+            value: "sb-camel-rest-postgresql"
+          - name: "REPOURL"
+            value: "https://github.com/ahermanto47/sb-camel-rest-postgresql.git"
+        jenkinsfile: |-
+          pipeline {
+
+            agent {
+              kubernetes {
+                label "jenkins"
+                cloud 'openshift'
+                serviceAccount 'jenkins'
+                containerTemplate {
+                  name 'jnlp'
+                  image "image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven"
+                  alwaysPullImage true
+                  workingDir '/tmp'
+                  args '${computer.jnlpmac} ${computer.name}'
+                  ttyEnabled false
+                }
+              }
+            }
+
+            environment {
+                HASBC = sh(script: 'oc get bc $APPNAME --no-headers | wc -l', , returnStdout: true).trim()
+                HASDC = sh(script: 'oc get dc $APPNAME --no-headers | wc -l', , returnStdout: true).trim()
+                HASRT = sh(script: 'oc get route $APPNAME --no-headers | wc -l', , returnStdout: true).trim()
+            }
+
+            stages{
+
+              stage("Checkout") {
+                steps {
+                  git branch: "main", url: "${REPOURL}"
+                  stash excludes: 'target/**,lib/**', name: 'source'
+                }
+              }
+
+              stage('Checkstyle') {
+                steps {
+                  unstash 'source'
+                  sh "ls"
+                  sh "mvn checkstyle:check"
+                }
+                post {
+                  always {
+                    recordIssues(tools: [checkStyle(reportEncoding: 'UTF-8')])
+                  }
+                }
+              }
+                
+              stage("Build And Unit Test") {
+                steps {
+                  unstash 'source'
+                  sh "ls"
+                  sh "mvn clean package sonar:sonar -Dsonar.host.url=http://sonar-release-management-dev.apps-crc.testing -Dsonar.login=admin -Dsonar.password=test"
+                  stash includes: 'target/*.jar', name: 'jar'
+                }
+                post {
+                  always {
+                    junit allowEmptyResults: true, testResults: '**/TEST**.xml'
+                    jacoco execPattern: 'target/jacoco.exec'
+                  }
+                }
+              }
+  
+              stage("Integration Test") {
+                steps {
+                  unstash 'source'
+                  sh "ls"
+                  sh "mvn clean verify -Pit"
+                }
+                post {
+                    always {
+                        sh "ls target/cucumber"
+                        cucumber reportTitle: 'My report',
+                                jsonReportDirectory: 'target/cucumber',
+                                fileIncludePattern: '**/*cucumber.json',
+                                sortingMethod: 'ALPHABETICAL',
+                                trendsLimit: 100
+                    }
+                }                
+              }
+  
+              stage('Create BuildConfig') {
+                when { environment name: 'HASBC', value: '0' }
+                steps {
+                  sh "oc new-build --name $APPNAME --strategy docker --binary --docker-image openjdk:11.0.10-slim -n $TARGETNS"                
+                }
+              }
+
+              stage('Build Image') {
+                steps {
+                  unstash 'jar'
+                  sh 'ls target'
+                  sh "oc start-build $APPNAME --from-dir . --follow"
+                }
+              }
+              
+              stage('Create DeploymentConfig') {
+                when { environment name: 'HASDC', value: '0' }
+                steps {
+                  sh "oc new-app --name=$APPNAME --image=image-registry.openshift-image-registry.svc:5000/$TARGETNS/$APPNAME --allow-missing-images --as-deployment-config --binary=false -n $TARGETNS"
+                  sleep 10
+                }
+              }
+              
+              stage('Create Route') {
+                when { environment name: 'HASRT', value: '0' }
+                steps {
+                  sh "oc expose service/$APPNAME -n $TARGETNS"
+                }
+              }
+
+            }           
+          }
