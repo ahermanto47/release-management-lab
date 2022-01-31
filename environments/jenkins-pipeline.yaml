@@ -74,16 +74,17 @@ items:
                 }
               }
                 
-              stage("Build And Unit Test") {
+              stage("Build/Unit Test/Coverage") {
                 steps {
                   unstash 'source'
                   sh "ls"
-                  sh "mvn clean package"
+                  sh "mvn clean package jacoco:report sonar:sonar -Dsonar.host.url=http://sonar-release-management-dev.apps-crc.testing -Dsonar.login=admin -Dsonar.password=admin"
                   stash includes: 'target/*.jar', name: 'jar'
                 }
                 post {
                   always {
                     junit allowEmptyResults: true, testResults: '**/TEST**.xml'
+                    jacoco execPattern: 'target/jacoco.exec'
                   }
                 }
               }
@@ -113,7 +114,7 @@ items:
                 }
               }
 
-              stage('Build Image') {
+              stage('Deploy') {
                 steps {
                   unstash 'jar'
                   sh 'ls target'
