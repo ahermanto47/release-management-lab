@@ -1,5 +1,85 @@
 apiVersion: v1
 items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: jira-pv0002
+    labels:
+      volume: jira-pv0002
+  spec:
+    capacity:
+      storage: 100Gi
+    hostPath:
+      path: /mnt/pv-data/jira-pv0002
+      type: ''
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Recycle
+    volumeMode: Filesystem
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: jira-pv0003
+    labels:
+      volume: jira-pv0003
+  spec:
+    capacity:
+      storage: 100Gi
+    hostPath:
+      path: /mnt/pv-data/jira-pv0003
+      type: ''
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Recycle
+    volumeMode: Filesystem
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: jira-local-home
+    labels:
+      app: jira-software
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: jira-pv0002
+    volumeMode: Filesystem
+  status:
+    phase: Bound
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    capacity:
+      storage: 100Gi
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: jira-shared-home
+    labels:
+      app: jira-software
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: jira-pv0003
+    volumeMode: Filesystem
+  status:
+    phase: Bound
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    capacity:
+      storage: 100Gi
 - apiVersion: apps/v1
   kind: StatefulSet
   metadata:
@@ -17,10 +97,27 @@ items:
           app: jira-software
       spec:
         restartPolicy: Always
-        serviceAccountName: default
+        initContainers:
+          - resources: {}
+            terminationMessagePath: /dev/termination-log
+            name: nfs-permission-fixer
+            command:
+              - sh
+              - '-c'
+              - (chown -R 2001:2001 /shared-home; chown -R 2001:2001 /local-home)
+            securityContext:
+              fsGroup: 2001
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: local-home
+                mountPath: /local-home
+              - name: shared-home
+                mountPath: /shared-home
+            terminationMessagePolicy: File
+            image: alpine
+        serviceAccountName: jira
         schedulerName: default-scheduler
         terminationGracePeriodSeconds: 30
-        securityContext: {}
         containers:
           - resources:
               requests:
@@ -39,10 +136,12 @@ items:
             terminationMessagePath: /dev/termination-log
             name: jira-software
             env:
+              - name: ATL_PROXY_NAME
+                value: 'jira-software-release-management-dev.apps-crc.testing'
               - name: ATL_TOMCAT_SCHEME
-                value: https
+                value: http
               - name: ATL_TOMCAT_SECURE
-                value: 'true'
+                value: 'false'
               - name: SET_PERMISSIONS
                 value: 'true'
               - name: JIRA_SHARED_HOME
@@ -89,16 +188,19 @@ items:
               - name: local-home
                 mountPath: /opt/atlassian/jira/logs
                 subPath: log
-              - name: shared-home
+              - name: local-home
                 mountPath: /var/atlassian/application-data/shared-home
+                subPath: shared-home
             terminationMessagePolicy: File
-            image: 'atlassian/jira-software:8.20.1-jdk11'
-        serviceAccount: default
+            image: 'atlassian/jira-software:latest'
+        serviceAccount: jira
         volumes:
           - name: local-home
-            emptyDir: {}
+            persistentVolumeClaim:
+               claimName: jira-local-home
           - name: shared-home
-            emptyDir: {}
+            persistentVolumeClaim:
+               claimName: jira-shared-home
         dnsPolicy: ClusterFirst
     serviceName: jira-software
     podManagementPolicy: OrderedReady
