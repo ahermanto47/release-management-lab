@@ -1,0 +1,261 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: bitbucket-pv0002
+    labels:
+      volume: bitbucket-pv0002
+  spec:
+    capacity:
+      storage: 100Gi
+    hostPath:
+      path: /mnt/pv-data/bitbucket-pv0002
+      type: ''
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Recycle
+    volumeMode: Filesystem
+- apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: bitbucket-pv0003
+    labels:
+      volume: bitbucket-pv0003
+  spec:
+    capacity:
+      storage: 100Gi
+    hostPath:
+      path: /mnt/pv-data/bitbucket-pv0003
+      type: ''
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    persistentVolumeReclaimPolicy: Recycle
+    volumeMode: Filesystem
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: bitbucket-local-home
+    labels:
+      app: bitbucket-server
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: bitbucket-pv0002
+    volumeMode: Filesystem
+  status:
+    phase: Bound
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    capacity:
+      storage: 100Gi
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: bitbucket-shared-home
+    labels:
+      app: bitbucket-server
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: bitbucket-pv0003
+    volumeMode: Filesystem
+  status:
+    phase: Bound
+    accessModes:
+      - ReadWriteOnce
+      - ReadWriteMany
+      - ReadOnlyMany
+    capacity:
+      storage: 100Gi
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: bitbucket-server
+    labels:
+      app.kubernetes.io/part-of: Infrastructure    
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: bitbucket-server
+    template:
+      metadata:
+        labels:
+          app: bitbucket-server
+      spec:
+        restartPolicy: Always
+        initContainers:
+          - resources: {}
+            terminationMessagePath: /dev/termination-log
+            name: nfs-permission-fixer
+            command:
+              - sh
+              - '-c'
+              - (chown -R 2003:2003 /shared-home; chown -R 2003:2003 /local-home)
+            securityContext:
+              fsGroup: 2003
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: local-home
+                mountPath: /local-home
+              - name: shared-home
+                mountPath: /shared-home
+            terminationMessagePolicy: File
+            image: alpine
+        serviceAccountName: bitbucket
+        schedulerName: default-scheduler
+        terminationGracePeriodSeconds: 30
+        containers:
+          - resources:
+              requests:
+                cpu: '2'
+                memory: 2G
+            readinessProbe:
+              httpGet:
+                path: /status
+                port: 7990
+                scheme: HTTP
+              initialDelaySeconds: 10
+              timeoutSeconds: 1
+              periodSeconds: 5
+              successThreshold: 1
+              failureThreshold: 30
+            terminationMessagePath: /dev/termination-log
+            name: bitbucket-server
+            env:
+              - name: SERVER_PROXY_NAME
+                value: 'bitbucket-server-release-management-dev.apps-crc.testing'
+              - name: SERVER_TOMCAT_SCHEME
+                value: http
+              - name: SERVER_TOMCAT_SECURE
+                value: 'false'
+              - name: SET_PERMISSIONS
+                value: 'true'
+              - name: ELASTICSEARCH_ENABLED
+                value: 'false'
+              - name: JVM_SUPPORT_RECOMMENDED_ARGS
+                valueFrom:
+                  configMapKeyRef:
+                    name: bitbucket-jvm-config
+                    key: additional_jvm_args
+              - name: JVM_MINIMUM_MEMORY
+                valueFrom:
+                  configMapKeyRef:
+                    name: bitbucket-jvm-config
+                    key: min_heap
+              - name: JVM_MAXIMUM_MEMORY
+                valueFrom:
+                  configMapKeyRef:
+                    name: bitbucket-jvm-config
+                    key: max_heap
+              - name: JVM_RESERVED_CODE_CACHE_SIZE
+                valueFrom:
+                  configMapKeyRef:
+                    name: bitbucket-jvm-config
+                    key: reserved_code_cache
+            ports:
+              - name: http
+                containerPort: 7990
+                protocol: TCP
+              - name: ssh
+                containerPort: 7999
+                protocol: TCP
+              - name: hazelcast
+                containerPort: 5701
+                protocol: TCP
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+              - name: local-home
+                mountPath: /var/atlassian/application-data/bitbucket
+              - name: local-home
+                mountPath: /opt/atlassian/bitbucket/logs
+                subPath: log
+              - name: local-home
+                mountPath: /var/atlassian/application-data/shared-home
+                subPath: shared-home
+            terminationMessagePolicy: File
+            image: 'atlassian/bitbucket-server:latest'
+        serviceAccount: bitbucket
+        volumes:
+          - name: local-home
+            persistentVolumeClaim:
+               claimName: bitbucket-local-home
+          - name: shared-home
+            persistentVolumeClaim:
+               claimName: bitbucket-shared-home
+        dnsPolicy: ClusterFirst
+    serviceName: bitbucket-server
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        partition: 0
+    revisionHistoryLimit: 10
+- apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: bitbucket-jvm-config
+    labels:
+      app: bitbucket-server
+  data:
+    additional_jvm_args: '-Datlassian.logging.cloud.enabled=false -XX:ActiveProcessorCount=2'
+    max_heap: 768m
+    min_heap: 384m
+    reserved_code_cache: 512m
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: bitbucket-server
+    labels:
+      app: bitbucket-server
+  spec:
+    ports:
+    - port: 7990
+      name: http
+    clusterIP: None
+    selector:
+      app: bitbucket-server
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: bitbucket-server
+  spec:
+    port:
+      targetPort: 7990
+    to:
+      kind: Service
+      name: bitbucket-server
+      weight: 100
+#- apiVersion: networking.k8s.io/v1
+#  kind: Ingress
+#  metadata:
+#    name: bitbucket-server
+#  spec:
+#    rules:
+#    - host: bitbucket-server-release-management-dev.apps-crc.testing
+#      http:
+#        paths:
+#        - backend:
+#            service:
+#              name: bitbucket-server
+#              port:
+#                number: 8080
+#          path: /
+#          pathType: Exact
+#    selector:
+#      app: bitbucket-server
+kind: List
+metadata: {}

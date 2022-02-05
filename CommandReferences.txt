@@ -129,3 +129,7 @@ ssh -i /home/ahermanto/.crc/machines/crc/id_ecdsa core@"192.168.130.11"
 sudo mkdir /mnt/pv-data/jira-pv00002
 
 oc exec --stdin --tty jira-software-0 -- /bin/bash
+
+oc create serviceaccount bitbucket -n release-management-dev
+
+oc adm policy add-scc-to-user anyuid -z bitbucket -n release-management-dev
