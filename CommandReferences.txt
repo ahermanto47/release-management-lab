@@ -133,3 +133,17 @@ oc exec --stdin --tty jira-software-0 -- /bin/bash
 oc create serviceaccount bitbucket -n release-management-dev
 
 oc adm policy add-scc-to-user anyuid -z bitbucket -n release-management-dev
+
+oc get pods -A | find /c /v ""
+
+for /L %f in (1,1,100) do echo %f && curl -k https://rest-to-postgresql-event-driven-dev.apps-crc.testing
+
+kn service update rest-to-postgresql --traffic rest-to-postgresql-00001=50 --traffic @latest=50
+
+kn service create hello --image gcr.io/knative-samples/helloworld-go --port 8080 --env TARGET=World --revision-name=world
+
+kn service update hello --env TARGET=Knative --revision-name=knative
+
+kn service update hello --traffic hello-world=50 --traffic @latest=50
+
+for /L %f in (1,1,100) do echo %f && curl -k https://hello-event-driven-dev.apps-crc.testing
