@@ -1,3 +1,7 @@
 .settings
 /.project
 *.log
+gpg
+pki
+repo
+rhsm
