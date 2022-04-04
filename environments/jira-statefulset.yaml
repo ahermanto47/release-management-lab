@@ -105,8 +105,8 @@ items:
               - sh
               - '-c'
               - (chown -R 2001:2001 /shared-home; chown -R 2001:2001 /local-home)
-            securityContext:
-              fsGroup: 2001
+#            securityContext:
+#              fsGroup: 2001
             imagePullPolicy: IfNotPresent
             volumeMounts:
               - name: local-home
